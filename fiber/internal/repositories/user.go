@@ -10,9 +10,9 @@ type userRepo struct {
 }
 
 type UserRepo interface {
-	CreateUser(user models.User) (models.User, error)
-	GetUserByEmail(email string) (models.User, error)
-	GetUserByUserName(username string) (models.User, error)
+	CreateUser(user *models.User) (*models.User, error)
+	GetUserByEmail(email string) (*models.User, error)
+	GetUserByUserName(username string) (*models.User, error)
 }
 
 func NewUserRepo(db *gorm.DB) UserRepo {
@@ -22,27 +22,27 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 }
 
 // CreateUser implements UserRepo.
-func (u *userRepo) CreateUser(user models.User) (models.User, error) {
-	if err := u.db.Model(&models.User{}).Create(&user).Error; err != nil {
-		return models.User{}, err
+func (u *userRepo) CreateUser(user *models.User) (*models.User, error) {
+	if err := u.db.Create(user).Error; err != nil {
+		return nil, err
 	}
 	return user, nil
 }
 
 // GetUserByEmail implements UserRepo.
-func (u *userRepo) GetUserByEmail(email string) (models.User, error) {
+func (u *userRepo) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
-	if err := u.db.Model(&models.User{}).Where("email = ?", email).First(&user).Error; err != nil {
-		return models.User{}, err
+	if err := u.db.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, err
 	}
-	return user, nil
+	return &user, nil
 }
 
 // GetUserByUserName implements UserRepo.
-func (u *userRepo) GetUserByUserName(username string) (models.User, error) {
+func (u *userRepo) GetUserByUserName(username string) (*models.User, error) {
 	var user models.User
-	if err := u.db.Model(&models.User{}).Where("username = ?", username).First(&user).Error; err != nil {
-		return models.User{}, err
+	if err := u.db.Where("username = ?", username).First(&user).Error; err != nil {
+		return nil, err
 	}
-	return user, nil
+	return &user, nil
 }
