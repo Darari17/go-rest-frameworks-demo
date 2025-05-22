@@ -11,8 +11,7 @@ type userRepo struct {
 
 type UserRepo interface {
 	CreateUser(user *models.User) (*models.User, error)
-	GetUserByEmail(email string) (*models.User, error)
-	GetUserByUserName(username string) (*models.User, error)
+	GetUserByEmailOrUsername(req string) (*models.User, error)
 }
 
 func NewUserRepo(db *gorm.DB) UserRepo {
@@ -30,18 +29,9 @@ func (u *userRepo) CreateUser(user *models.User) (*models.User, error) {
 }
 
 // GetUserByEmail implements UserRepo.
-func (u *userRepo) GetUserByEmail(email string) (*models.User, error) {
+func (u *userRepo) GetUserByEmailOrUsername(req string) (*models.User, error) {
 	var user models.User
-	if err := u.db.Where("email = ?", email).First(&user).Error; err != nil {
-		return nil, err
-	}
-	return &user, nil
-}
-
-// GetUserByUserName implements UserRepo.
-func (u *userRepo) GetUserByUserName(username string) (*models.User, error) {
-	var user models.User
-	if err := u.db.Where("username = ?", username).First(&user).Error; err != nil {
+	if err := u.db.Where("email = ? OR username = ?", req, req).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
