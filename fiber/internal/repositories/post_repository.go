@@ -10,11 +10,11 @@ type postRepo struct {
 }
 
 type PostRepo interface {
-	CreatePost(post *models.Post) (*models.Post, error)
-	DeletePost(postId uint) error
-	GetPostById(postId uint) (*models.Post, error)
-	GetPosts() ([]*models.Post, error)
-	UpdatePost(post *models.Post) (*models.Post, error)
+	CreatePostRepo(post *models.Post) (*models.Post, error)
+	DeletePostRepo(postId uint) error
+	GetPostByIdRepo(postId uint) (*models.Post, error)
+	GetPostsRepo() ([]*models.Post, error)
+	UpdatePostRepo(post *models.Post) (*models.Post, error)
 }
 
 func NewPostRepo(db *gorm.DB) PostRepo {
@@ -24,7 +24,7 @@ func NewPostRepo(db *gorm.DB) PostRepo {
 }
 
 // CreatePost implements PostRepo.
-func (p *postRepo) CreatePost(post *models.Post) (*models.Post, error) {
+func (p *postRepo) CreatePostRepo(post *models.Post) (*models.Post, error) {
 	if err := p.db.Create(post).Error; err != nil {
 		return nil, err
 	}
@@ -32,12 +32,12 @@ func (p *postRepo) CreatePost(post *models.Post) (*models.Post, error) {
 }
 
 // DeletePost implements PostRepo.
-func (p *postRepo) DeletePost(postId uint) error {
+func (p *postRepo) DeletePostRepo(postId uint) error {
 	return p.db.Delete(&models.Post{}, postId).Error
 }
 
 // GetPostById implements PostRepo.
-func (p *postRepo) GetPostById(postId uint) (*models.Post, error) {
+func (p *postRepo) GetPostByIdRepo(postId uint) (*models.Post, error) {
 	var post models.Post
 	if err := p.db.First(&post, postId).Error; err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (p *postRepo) GetPostById(postId uint) (*models.Post, error) {
 }
 
 // GetPosts implements PostRepo.
-func (p *postRepo) GetPosts() ([]*models.Post, error) {
+func (p *postRepo) GetPostsRepo() ([]*models.Post, error) {
 	var posts []*models.Post
 	if err := p.db.Find(&posts).Error; err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func (p *postRepo) GetPosts() ([]*models.Post, error) {
 }
 
 // UpdatePost implements PostRepo.
-func (p *postRepo) UpdatePost(post *models.Post) (*models.Post, error) {
+func (p *postRepo) UpdatePostRepo(post *models.Post) (*models.Post, error) {
 	if err := p.db.Model(&models.Post{}).Where("id = ?", post.ID).Updates(post).Error; err != nil {
 		return nil, err
 	}

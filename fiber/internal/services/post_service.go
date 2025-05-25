@@ -14,11 +14,11 @@ type postService struct {
 }
 
 type PostService interface {
-	CreatePost(req dtos.CreatePost) (dtos.PostResponse, error)
-	FindByPostID(postId uint) (dtos.PostResponse, error)
-	FindAllPost() ([]dtos.PostResponse, error)
-	UpdatePost(req dtos.UpdatePost) (dtos.PostResponse, error)
-	DeletePost(postId uint) error
+	CreatePostService(req dtos.CreatePost) (dtos.PostResponse, error)
+	FindByPostIDService(postId uint) (dtos.PostResponse, error)
+	FindAllPostService() ([]dtos.PostResponse, error)
+	UpdatePostService(req dtos.UpdatePost) (dtos.PostResponse, error)
+	DeletePostService(postId uint) error
 }
 
 func NewPostService(postRepo repositories.PostRepo) PostService {
@@ -28,12 +28,12 @@ func NewPostService(postRepo repositories.PostRepo) PostService {
 }
 
 // CreatePost implements PostService.
-func (p *postService) CreatePost(req dtos.CreatePost) (dtos.PostResponse, error) {
+func (p *postService) CreatePostService(req dtos.CreatePost) (dtos.PostResponse, error) {
 	if err := validator.New().Struct(&req); err != nil {
 		return dtos.PostResponse{}, err
 	}
 
-	post, err := p.postRepo.CreatePost(&models.Post{
+	post, err := p.postRepo.CreatePostRepo(&models.Post{
 		UserID:   req.UserID,
 		Content:  req.Content,
 		ImageURL: req.ImageURL,
@@ -55,13 +55,13 @@ func (p *postService) CreatePost(req dtos.CreatePost) (dtos.PostResponse, error)
 }
 
 // DeletePost implements PostService.
-func (p *postService) DeletePost(postId uint) error {
-	return p.postRepo.DeletePost(postId)
+func (p *postService) DeletePostService(postId uint) error {
+	return p.postRepo.DeletePostRepo(postId)
 }
 
 // FindAllPost implements PostService.
-func (p *postService) FindAllPost() ([]dtos.PostResponse, error) {
-	posts, err := p.postRepo.GetPosts()
+func (p *postService) FindAllPostService() ([]dtos.PostResponse, error) {
+	posts, err := p.postRepo.GetPostsRepo()
 	if err != nil {
 		return nil, err
 	}
@@ -83,8 +83,8 @@ func (p *postService) FindAllPost() ([]dtos.PostResponse, error) {
 }
 
 // FindByPostID implements PostService.
-func (p *postService) FindByPostID(postId uint) (dtos.PostResponse, error) {
-	post, err := p.postRepo.GetPostById(postId)
+func (p *postService) FindByPostIDService(postId uint) (dtos.PostResponse, error) {
+	post, err := p.postRepo.GetPostByIdRepo(postId)
 	if err != nil {
 		return dtos.PostResponse{}, err
 	}
@@ -102,12 +102,12 @@ func (p *postService) FindByPostID(postId uint) (dtos.PostResponse, error) {
 }
 
 // UpdatePost implements PostService.
-func (p *postService) UpdatePost(req dtos.UpdatePost) (dtos.PostResponse, error) {
+func (p *postService) UpdatePostService(req dtos.UpdatePost) (dtos.PostResponse, error) {
 	if err := validator.New().Struct(&req); err != nil {
 		return dtos.PostResponse{}, err
 	}
 
-	exsistingPost, err := p.postRepo.GetPostById(req.ID)
+	exsistingPost, err := p.postRepo.GetPostByIdRepo(req.ID)
 	if err != nil {
 		return dtos.PostResponse{}, err
 	}
@@ -123,7 +123,7 @@ func (p *postService) UpdatePost(req dtos.UpdatePost) (dtos.PostResponse, error)
 		exsistingPost.ImageURL = req.ImageURL
 	}
 
-	post, err := p.postRepo.UpdatePost(exsistingPost)
+	post, err := p.postRepo.UpdatePostRepo(exsistingPost)
 	if err != nil {
 		return dtos.PostResponse{}, err
 	}
