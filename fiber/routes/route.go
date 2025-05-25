@@ -27,10 +27,6 @@ type Routes struct {
 func (r *Routes) setupRoutes() {
 	api := r.app.Group("/api/v1")
 
-	api.Get("/health", func(c *fiber.Ctx) error {
-		return c.SendString("OK")
-	})
-
 	api.Post("/login", r.userController.Login)
 	api.Post("/register", r.userController.Register)
 }
