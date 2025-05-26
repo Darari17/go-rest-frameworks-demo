@@ -19,6 +19,7 @@ type Routes struct {
 	db  *gorm.DB
 
 	userController controllers.UserController
+	postController controllers.PostController
 
 	authMiddleware middleware.AuthMiddleware
 	jwtHandler     jwt.JWTHandler
@@ -29,6 +30,15 @@ func (r *Routes) setupRoutes() {
 
 	api.Post("/login", r.userController.Login)
 	api.Post("/register", r.userController.Register)
+
+	post := api.Group("/posts")
+	{
+		post.Post("/", r.postController.CreatePostController).Use(r.authMiddleware.RequiredToken())
+		post.Get("/", r.postController.GetPostsController)
+		post.Get("/:id", r.postController.GetPostByIdController)
+		post.Put("/:id", r.postController.UpdatePostController).Use(r.authMiddleware.RequiredToken())
+		post.Delete("/:id", r.postController.DeletePostController).Use(r.authMiddleware.RequiredToken())
+	}
 }
 
 func (r *Routes) Run(port string) {

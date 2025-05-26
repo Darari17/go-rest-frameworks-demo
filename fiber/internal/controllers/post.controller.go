@@ -124,15 +124,95 @@ func (p *postController) DeletePostController(ctx *fiber.Ctx) error {
 
 // GetPostByIdController implements PostController.
 func (p *postController) GetPostByIdController(ctx *fiber.Ctx) error {
-	panic("unimplemented")
+
+	postID, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(dtos.ErrorResponse{
+			Code:   fiber.StatusBadRequest,
+			Status: http.StatusText(fiber.StatusBadRequest),
+			Error:  "Invalid post ID: " + err.Error(),
+		})
+	}
+
+	post, err := p.postService.FindByPostIDService(uint(postID))
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(dtos.ErrorResponse{
+			Code:   fiber.StatusInternalServerError,
+			Status: http.StatusText(fiber.StatusInternalServerError),
+			Error:  "Failed to get post: " + err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(dtos.SuccessResponse{
+		Code:   fiber.StatusOK,
+		Status: http.StatusText(fiber.StatusOK),
+		Data:   post,
+	})
 }
 
-// GetPostsController implements PostController.
+// GetPostsController implements PostController. // Public Posts
 func (p *postController) GetPostsController(ctx *fiber.Ctx) error {
-	panic("unimplemented")
+	posts, err := p.postService.FindAllPostService()
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(dtos.ErrorResponse{
+			Code:   fiber.StatusInternalServerError,
+			Status: http.StatusText(fiber.StatusInternalServerError),
+			Error:  "Failed to get posts: " + err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(dtos.SuccessResponse{
+		Code:   fiber.StatusOK,
+		Status: http.StatusText(fiber.StatusOK),
+		Data:   posts,
+	})
 }
 
 // UpdatePostController implements PostController.
 func (p *postController) UpdatePostController(ctx *fiber.Ctx) error {
-	panic("unimplemented")
+
+	userID, err := helpers.GetUserFromContext(ctx)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(dtos.ErrorResponse{
+			Code:   fiber.StatusUnauthorized,
+			Status: http.StatusText(fiber.StatusUnauthorized),
+			Error:  "Unauthorized access: " + err.Error(),
+		})
+	}
+
+	postID, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(dtos.ErrorResponse{
+			Code:   fiber.StatusBadRequest,
+			Status: http.StatusText(fiber.StatusBadRequest),
+			Error:  "Invalid post ID: " + err.Error(),
+		})
+	}
+
+	var request dtos.UpdatePost
+	if err := ctx.BodyParser(&request); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(dtos.ErrorResponse{
+			Code:   fiber.StatusBadRequest,
+			Status: http.StatusText(fiber.StatusBadRequest),
+			Error:  "Invalid request body: " + err.Error(),
+		})
+	}
+
+	request.ID = uint(postID)
+	request.UserID = userID
+
+	post, err := p.postService.UpdatePostService(request)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(dtos.ErrorResponse{
+			Code:   fiber.StatusInternalServerError,
+			Status: http.StatusText(fiber.StatusInternalServerError),
+			Error:  "Failed to update post: " + err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(dtos.SuccessResponse{
+		Code:   fiber.StatusOK,
+		Status: http.StatusText(fiber.StatusOK),
+		Data:   post,
+	})
 }
