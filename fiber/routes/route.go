@@ -10,6 +10,7 @@ import (
 	"github.com/go-rest-frameworks-demo/fiber/internal/middleware"
 	"github.com/go-rest-frameworks-demo/fiber/internal/repositories"
 	"github.com/go-rest-frameworks-demo/fiber/internal/services"
+	"github.com/go-rest-frameworks-demo/fiber/migrations"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -70,7 +71,9 @@ func NewServer() *Routes {
 		log.Fatal("Could not connect to database:", err)
 	}
 
-	// migrate
+	if err := migrations.Migrate(db); err != nil {
+		log.Fatal("Database migration failed: ", err)
+	}
 
 	secretKey := os.Getenv("SECRET_KEY")
 	if secretKey == "" {
