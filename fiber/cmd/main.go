@@ -1,6 +1,6 @@
 package main
 
-import "github.com/go-rest-frameworks-demo/fiber/routes"
+import "github.com/Darari17/go-rest-frameworks-demo/fiber/routes"
 
 func main() {
 	server := routes.NewServer()

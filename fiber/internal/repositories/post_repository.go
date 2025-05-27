@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/go-rest-frameworks-demo/fiber/internal/models"
+	"github.com/Darari17/go-rest-frameworks-demo/fiber/internal/models"
 	"gorm.io/gorm"
 )
 

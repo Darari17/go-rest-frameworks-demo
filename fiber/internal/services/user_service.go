@@ -3,12 +3,12 @@ package services
 import (
 	"errors"
 
+	"github.com/Darari17/go-rest-frameworks-demo/fiber/internal/dtos"
+	"github.com/Darari17/go-rest-frameworks-demo/fiber/internal/helpers"
+	"github.com/Darari17/go-rest-frameworks-demo/fiber/internal/jwt"
+	"github.com/Darari17/go-rest-frameworks-demo/fiber/internal/models"
+	"github.com/Darari17/go-rest-frameworks-demo/fiber/internal/repositories"
 	"github.com/go-playground/validator/v10"
-	"github.com/go-rest-frameworks-demo/fiber/internal/dtos"
-	"github.com/go-rest-frameworks-demo/fiber/internal/helpers"
-	"github.com/go-rest-frameworks-demo/fiber/internal/jwt"
-	"github.com/go-rest-frameworks-demo/fiber/internal/models"
-	"github.com/go-rest-frameworks-demo/fiber/internal/repositories"
 )
 
 type userService struct {

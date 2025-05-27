@@ -3,7 +3,7 @@ package middleware
 import (
 	"strings"
 
-	"github.com/go-rest-frameworks-demo/fiber/internal/jwt"
+	"github.com/Darari17/go-rest-frameworks-demo/fiber/internal/jwt"
 	"github.com/gofiber/fiber/v2"
 )
 

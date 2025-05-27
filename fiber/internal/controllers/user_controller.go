@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/go-rest-frameworks-demo/fiber/internal/dtos"
-	"github.com/go-rest-frameworks-demo/fiber/internal/services"
+	"github.com/Darari17/go-rest-frameworks-demo/fiber/internal/dtos"
+	"github.com/Darari17/go-rest-frameworks-demo/fiber/internal/services"
 	"github.com/gofiber/fiber/v2"
 )
 

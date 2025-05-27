@@ -1,4 +1,4 @@
-module github.com/go-rest-frameworks-demo/fiber
+module github.com/Darari17/go-rest-frameworks-demo/fiber
 
 go 1.24.0
 
