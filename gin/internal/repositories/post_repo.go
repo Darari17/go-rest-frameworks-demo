@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/Darari17/go-rest-frameworks-demo/gin/internal/models"
 	"gorm.io/gorm"
@@ -65,7 +66,7 @@ func (p *postRepo) GetPostByPostID(postID uint) (*models.Post, error) {
 func (p *postRepo) GetPostsByUserID(userID uint) ([]*models.Post, error) {
 
 	var posts []*models.Post
-	if err := p.db.Preload("User").Find(&posts).Error; err != nil {
+	if err := p.db.Preload("User").Where("user_id = ?", userID).Find(&posts).Error; err != nil {
 		return nil, err
 	}
 	return posts, nil
@@ -74,25 +75,31 @@ func (p *postRepo) GetPostsByUserID(userID uint) ([]*models.Post, error) {
 // UpdatePost implements PostRepo.
 func (p *postRepo) UpdatePost(post *models.Post) (*models.Post, error) {
 
-	// cek user id dan post id
-	var existingPost models.Post
-	if err := p.db.Where("id = ? AND user_id = ?", post.ID, post.UserID).First(&existingPost).Error; err != nil {
-		return nil, errors.New("post not found")
-	}
+	var updatedPost models.Post
 
-	// update yang pilih saja
-	err := p.db.Model(&existingPost).
-		Select("Content", "ImageURL", "UpdatedAt").
-		Updates(post).
-		Error
+	err := p.db.Transaction(func(tx *gorm.DB) error {
+		result := tx.Model(&models.Post{}).
+			Where("id = ? AND user_id = ?", post.ID, post.UserID).
+			Select("Content", "ImageURL", "UpdatedAt").
+			Updates(map[string]interface{}{
+				"Content":   post.Content,
+				"ImageURL":  post.ImageURL,
+				"UpdatedAt": gorm.Expr("NOW()"),
+			})
+
+		if result.Error != nil {
+			return fmt.Errorf("update failed: %w", result.Error)
+		}
+
+		if result.RowsAffected == 0 {
+			return gorm.ErrRecordNotFound
+		}
+
+		return tx.First(&updatedPost, post.ID).Error
+	})
+
 	if err != nil {
 		return nil, err
 	}
-
-	// get data terbaru
-	if err := p.db.Preload("User").First(&existingPost, post.ID).Error; err != nil {
-		return nil, err
-	}
-
-	return &existingPost, nil
+	return &updatedPost, nil
 }
