@@ -5,23 +5,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserRepo interface {
-	Create(user *models.User) (*models.User, error)
-	GetEmailOrUsername(req string) (*models.User, error)
-}
-
-type userRepo struct {
+type UserRepo struct {
 	db *gorm.DB
 }
 
-func NewUserRepo(db *gorm.DB) UserRepo {
-	return &userRepo{
+func NewUserRepo(db *gorm.DB) *UserRepo {
+	return &UserRepo{
 		db: db,
 	}
 }
 
 // Create implements UserRepo.
-func (u *userRepo) Create(user *models.User) (*models.User, error) {
+func (u *UserRepo) Create(user *models.User) (*models.User, error) {
 	if err := u.db.Create(user).Error; err != nil {
 		return nil, err
 	}
@@ -29,7 +24,7 @@ func (u *userRepo) Create(user *models.User) (*models.User, error) {
 }
 
 // GetEmailOrUsername implements UserRepo.
-func (u *userRepo) GetEmailOrUsername(req string) (*models.User, error) {
+func (u *UserRepo) GetEmailOrUsername(req string) (*models.User, error) {
 	var user models.User
 	if err := u.db.Where("email = ? OR username = ?", req, req).First(&user).Error; err != nil {
 		return nil, err
