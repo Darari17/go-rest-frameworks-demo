@@ -16,10 +16,10 @@ type UserService struct {
 	jwtHandler jwt.JWTHandler
 }
 
-func NewUserService(userRepo repositories.UserRepo, jwtHandler jwt.JWTHandler) *UserService {
+func NewUserService(ur repositories.UserRepo, jh jwt.JWTHandler) *UserService {
 	return &UserService{
-		userRepo:   userRepo,
-		jwtHandler: jwtHandler,
+		userRepo:   ur,
+		jwtHandler: jh,
 	}
 }
 

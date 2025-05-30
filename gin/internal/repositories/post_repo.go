@@ -19,18 +19,18 @@ func NewPostRepo(db *gorm.DB) *PostRepo {
 }
 
 // CreatePost implements PostRepo.
-func (p *PostRepo) CreatePost(post *models.Post) (*models.Post, error) {
+func (pr *PostRepo) CreatePost(post *models.Post) (*models.Post, error) {
 
-	if err := p.db.Create(post).Error; err != nil {
+	if err := pr.db.Create(post).Error; err != nil {
 		return nil, err
 	}
 	return post, nil
 }
 
 // DeletePostByPostID implements PostRepo.
-func (p *PostRepo) DeletePostByPostID(postID uint) error {
+func (pr *PostRepo) DeletePostByPostID(postID uint) error {
 
-	result := p.db.Delete(&models.Post{}, postID)
+	result := pr.db.Delete(&models.Post{}, postID)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -41,10 +41,10 @@ func (p *PostRepo) DeletePostByPostID(postID uint) error {
 }
 
 // GetPostByPostID implements PostRepo.
-func (p *PostRepo) GetPostByPostID(postID uint) (*models.Post, error) {
+func (pr *PostRepo) GetPostByPostID(postID uint) (*models.Post, error) {
 
 	var post models.Post
-	if err := p.db.Preload("User").First(&post, postID).Error; err != nil {
+	if err := pr.db.Preload("User").First(&post, postID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("post not found")
 		}
@@ -54,19 +54,19 @@ func (p *PostRepo) GetPostByPostID(postID uint) (*models.Post, error) {
 }
 
 // GetPostsByUserID implements PostRepo.
-func (p *PostRepo) GetPostsByUserID(userID uint) ([]*models.Post, error) {
+func (pr *PostRepo) GetPostsByUserID(userID uint) ([]*models.Post, error) {
 
 	var posts []*models.Post
-	if err := p.db.Preload("User").Where("user_id = ?", userID).Find(&posts).Error; err != nil {
+	if err := pr.db.Preload("User").Where("user_id = ?", userID).Find(&posts).Error; err != nil {
 		return nil, err
 	}
 	return posts, nil
 }
 
 // UpdatePost implements PostRepo.
-func (p *PostRepo) UpdatePost(post *models.Post) (*models.Post, error) {
+func (pr *PostRepo) UpdatePost(post *models.Post) (*models.Post, error) {
 
-	result := p.db.Model(&models.Post{}).
+	result := pr.db.Model(&models.Post{}).
 		Where("id = ? AND user_id = ?", post.ID, post.UserID).
 		Updates(map[string]interface{}{
 			"Content":   post.Content,

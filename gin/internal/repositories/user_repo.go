@@ -16,17 +16,17 @@ func NewUserRepo(db *gorm.DB) *UserRepo {
 }
 
 // Create implements UserRepo.
-func (u *UserRepo) Create(user *models.User) (*models.User, error) {
-	if err := u.db.Create(user).Error; err != nil {
+func (ur *UserRepo) Create(user *models.User) (*models.User, error) {
+	if err := ur.db.Create(user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
 // GetEmailOrUsername implements UserRepo.
-func (u *UserRepo) GetEmailOrUsername(req string) (*models.User, error) {
+func (ur *UserRepo) GetEmailOrUsername(req string) (*models.User, error) {
 	var user models.User
-	if err := u.db.Where("email = ? OR username = ?", req, req).First(&user).Error; err != nil {
+	if err := ur.db.Where("email = ? OR username = ?", req, req).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
