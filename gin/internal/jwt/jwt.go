@@ -8,7 +8,7 @@ import (
 )
 
 type customClaims struct {
-	userId uint
+	UserID uint
 	jwt.RegisteredClaims
 }
 
@@ -24,7 +24,7 @@ func NewJWTHandler(secretKey string) *JWTHandler {
 
 func (j *JWTHandler) GenerateToken(userId uint) (string, error) {
 	claims := customClaims{
-		userId: userId,
+		UserID: userId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "mosting",
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
