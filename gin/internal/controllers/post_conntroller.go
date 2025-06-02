@@ -74,7 +74,7 @@ func (pc *PostController) DeletePost(ctx *gin.Context) {
 	}
 
 	postId, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
+	if err != nil || postId <= 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
@@ -127,7 +127,7 @@ func (pc *PostController) UpdatePost(ctx *gin.Context) {
 	}
 
 	postId, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
+	if err != nil || postId <= 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
@@ -166,5 +166,60 @@ func (pc *PostController) UpdatePost(ctx *gin.Context) {
 	})
 }
 
-func (pc *PostController) GetPostByPostID(ctx *gin.Context)  {}
-func (pc *PostController) GetPostsByUserID(ctx *gin.Context) {}
+func (pc *PostController) GetPostByPostID(ctx *gin.Context) {
+
+	postId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil || postId <= 0 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, dtos.Response[string]{
+			Code:   http.StatusBadRequest,
+			Status: http.StatusText(http.StatusBadRequest),
+			Error:  "Invalid post ID: " + err.Error(),
+		})
+		return
+	}
+
+	post, err := pc.postService.GetPostByPostID(uint(postId))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, dtos.Response[string]{
+			Code:   http.StatusInternalServerError,
+			Status: http.StatusText(http.StatusInternalServerError),
+			Error:  "Failed to get post: " + err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dtos.Response[dtos.PostResponse]{
+		Code:   http.StatusOK,
+		Status: http.StatusText(http.StatusOK),
+		Data:   post,
+	})
+}
+
+func (pc *PostController) GetPostsByUserID(ctx *gin.Context) {
+
+	userId, err := helpers.GetUserFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, dtos.Response[string]{
+			Code:   http.StatusUnauthorized,
+			Status: http.StatusText(http.StatusUnauthorized),
+			Error:  "Unauthorized: " + err.Error(),
+		})
+		return
+	}
+
+	posts, err := pc.postService.GetPostsByUserID(userId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, dtos.Response[string]{
+			Code:   http.StatusInternalServerError,
+			Status: http.StatusText(http.StatusInternalServerError),
+			Error:  "Failed to get posts: " + err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dtos.Response[[]dtos.PostResponse]{
+		Code:   http.StatusOK,
+		Status: http.StatusText(http.StatusOK),
+		Data:   posts,
+	})
+}
