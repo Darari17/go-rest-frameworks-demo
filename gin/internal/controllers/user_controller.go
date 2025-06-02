@@ -26,7 +26,7 @@ func (uc *UserController) Register(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
-			Error:  "invalid request body: " + err.Error(),
+			Error:  "Invalid request body: " + err.Error(),
 		})
 		return
 	}
