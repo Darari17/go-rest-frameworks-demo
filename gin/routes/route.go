@@ -21,6 +21,7 @@ type Routes struct {
 	jwtHandler     jwt.JWTHandler
 
 	userController controllers.UserController
+	postController controllers.PostController
 }
 
 func (r *Routes) userRoute() {
@@ -31,11 +32,14 @@ func (r *Routes) userRoute() {
 
 func (r *Routes) postRoute() {
 	post := r.app.Group("/api/v1/posts")
-	post.POST("/").Use(r.authMiddleware.RequiredToken())
-	post.GET("/")
-	post.GET("/:id")
-	post.GET("/:id").Use(r.authMiddleware.RequiredToken())
-	post.DELETE("/:id").Use(r.authMiddleware.RequiredToken())
+
+	post.GET("/:id", r.postController.GetPostByPostID)
+
+	post.POST("/", r.authMiddleware.RequiredToken(), r.postController.CreatePost)
+	post.GET("/", r.authMiddleware.RequiredToken(), r.postController.GetPostsByUserID)
+	post.PUT("/:id", r.authMiddleware.RequiredToken(), r.postController.UpdatePost)
+	post.DELETE("/:id", r.authMiddleware.RequiredToken(), r.postController.DeletePost)
+
 }
 
 func (r *Routes) setupRoutes() {
@@ -88,16 +92,21 @@ func NewServer() *Routes {
 	middleware := middleware.NewAuthMiddleware(*jwtHandler)
 
 	userRepo := repositories.NewUserRepo(db)
+	postRepo := repositories.NewPostRepo(db)
 
 	userService := services.NewUserService(*userRepo, *jwtHandler)
+	postService := services.NewPostService(*postRepo, *jwtHandler)
 
 	userController := controllers.NewUserController(*userService)
+	postController := controllers.NewPostController(*postService)
 
 	return &Routes{
 		app:            app,
-		db:             &gorm.DB{},
+		db:             db,
 		authMiddleware: *middleware,
-		userController: *userController,
 		jwtHandler:     *jwtHandler,
+
+		userController: *userController,
+		postController: *postController,
 	}
 }
