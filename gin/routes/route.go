@@ -10,6 +10,7 @@ import (
 	"github.com/Darari17/go-rest-frameworks-demo/gin/internal/middleware"
 	"github.com/Darari17/go-rest-frameworks-demo/gin/internal/repositories"
 	"github.com/Darari17/go-rest-frameworks-demo/gin/internal/services"
+	"github.com/Darari17/go-rest-frameworks-demo/gin/migrations"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -77,9 +78,9 @@ func NewServer() *Routes {
 		log.Fatal("Could not connect to database:", err)
 	}
 
-	// if err := migrations.Migrate(db); err != nil {
-	// 	log.Fatal("Database migration failed: ", err)
-	// }
+	if err := migrations.Migrate(db); err != nil {
+		log.Fatal("Database migration failed: ", err)
+	}
 
 	secretKey := os.Getenv("SECRET_KEY")
 	if secretKey == "" {
