@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"github.com/Darari17/go-rest-frameworks-demo/gin/routes"
+)
 
 func main() {
-	fmt.Println("HALOOOOOO DUNIAAAA")
+	server := routes.NewServer()
+	defer server.Close()
+
+	server.Run(":3000")
 }

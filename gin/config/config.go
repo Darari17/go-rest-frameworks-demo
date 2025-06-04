@@ -23,9 +23,8 @@ type Config struct {
 }
 
 func ConnDB() (*gorm.DB, error) {
-
 	var cfg Config
-	err := helpers.LoadYAMLConfig("config.yaml", &cfg)
+	err := helpers.LoadYAMLConfig(".yaml", &cfg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load config: %w", err)
 	}

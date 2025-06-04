@@ -83,7 +83,7 @@ func NewServer() *Routes {
 
 	app := gin.Default()
 
-	jwtHandler := jwt.NewJWTHandler("config/config.yaml")
+	jwtHandler := jwt.NewJWTHandler(".yaml")
 
 	middleware := middleware.NewAuthMiddleware(*jwtHandler)
 
