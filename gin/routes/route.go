@@ -2,7 +2,6 @@ package routes
 
 import (
 	"log"
-	"os"
 
 	"github.com/Darari17/go-rest-frameworks-demo/gin/config"
 	"github.com/Darari17/go-rest-frameworks-demo/gin/internal/controllers"
@@ -82,14 +81,9 @@ func NewServer() *Routes {
 		log.Fatal("Database migration failed: ", err)
 	}
 
-	secretKey := os.Getenv("SECRET_KEY")
-	if secretKey == "" {
-		log.Fatal("SECRET_KEY is not set in environment")
-	}
-
 	app := gin.Default()
 
-	jwtHandler := jwt.NewJWTHandler(secretKey)
+	jwtHandler := jwt.NewJWTHandler("config/config.yaml")
 	middleware := middleware.NewAuthMiddleware(*jwtHandler)
 
 	userRepo := repositories.NewUserRepo(db)

@@ -3,28 +3,41 @@ package config
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
-	"github.com/joho/godotenv"
+	"github.com/Darari17/go-rest-frameworks-demo/gin/internal/helpers"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+type Config struct {
+	DB struct {
+		Host     string `yaml:"host"`
+		User     string `yaml:"user"`
+		Password string `yaml:"password"`
+		Name     string `yaml:"name"`
+		Port     int    `yaml:"port"`
+		SSLMode  string `yaml:"ssl_mode"`
+		Timezone string `yaml:"timezone"`
+	} `yaml:"db"`
+}
+
 func ConnDB() (*gorm.DB, error) {
-	err := godotenv.Load()
+
+	var cfg Config
+	err := helpers.LoadYAMLConfig("config.yaml", &cfg)
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		return nil, fmt.Errorf("failed to load config: %w", err)
 	}
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_SSLMODE"),
-		os.Getenv("TIMEZONE"),
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
+		cfg.DB.Host,
+		cfg.DB.User,
+		cfg.DB.Password,
+		cfg.DB.Name,
+		cfg.DB.Port,
+		cfg.DB.SSLMode,
+		cfg.DB.Timezone,
 	)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
