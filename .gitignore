@@ -1,2 +1,2 @@
-# Ignore all .env files in any folder or subfolder 
 **/.env
+**/.yaml
