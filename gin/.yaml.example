@@ -1,9 +1,9 @@
 db:
   host: localhost
   user: postgres
-  password: 12345
+  password: "12345"
   name: golang_gin_frameworks
-  port: 5432
+  port: "5432"
   ssl_mode: disable
   timezone: UTC
 

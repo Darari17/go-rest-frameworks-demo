@@ -16,7 +16,7 @@ type Config struct {
 		User     string `yaml:"user"`
 		Password string `yaml:"password"`
 		Name     string `yaml:"name"`
-		Port     int    `yaml:"port"`
+		Port     string `yaml:"port"`
 		SSLMode  string `yaml:"ssl_mode"`
 		Timezone string `yaml:"timezone"`
 	} `yaml:"db"`
@@ -29,7 +29,7 @@ func ConnDB() (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to load config: %w", err)
 	}
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		cfg.DB.Host,
 		cfg.DB.User,
 		cfg.DB.Password,
