@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/Darari17/go-rest-frameworks-demo/echo/config"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -18,7 +19,7 @@ type JWTHandler struct {
 
 func NewJWTHandler(secretKey string) *JWTHandler {
 	return &JWTHandler{
-		secretKey: []byte(secretKey),
+		secretKey: []byte(config.AppConfig.JWTConfig.SecretKey),
 	}
 }
 
