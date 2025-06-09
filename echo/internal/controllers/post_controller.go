@@ -47,7 +47,7 @@ func (pc *PostController) CreatePost(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
-			Error:  "Invalid request body: " + err.Error(),
+			Error:  "Validation failed: " + err.Error(),
 		})
 	}
 
@@ -150,7 +150,7 @@ func (pc *PostController) UpdatePost(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
-			Error:  "Invalid request body: " + err.Error(),
+			Error:  "Validation failed: " + err.Error(),
 		})
 	}
 
