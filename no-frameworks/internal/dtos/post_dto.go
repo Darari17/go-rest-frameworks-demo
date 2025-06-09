@@ -1,8 +1,6 @@
 package dtos
 
-import (
-	"time"
-)
+import "time"
 
 type CreatePost struct {
 	UserID   uint    `json:"user_id" validate:"required"`
