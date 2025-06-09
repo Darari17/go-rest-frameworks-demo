@@ -5,16 +5,19 @@ import (
 
 	"github.com/Darari17/go-rest-frameworks-demo/echo/internal/dtos"
 	"github.com/Darari17/go-rest-frameworks-demo/echo/internal/services"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
 type UserController struct {
 	userService services.UserService
+	validator   *validator.Validate
 }
 
 func NewUserController(us services.UserService) *UserController {
 	return &UserController{
 		userService: us,
+		validator:   validator.New(),
 	}
 }
 
@@ -23,6 +26,14 @@ func (uc *UserController) Register(c echo.Context) error {
 	var payload dtos.RegisterRequest
 
 	if err := c.Bind(&payload); err != nil {
+		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
+			Code:   http.StatusBadRequest,
+			Status: http.StatusText(http.StatusBadRequest),
+			Error:  "Invalid request body: " + err.Error(),
+		})
+	}
+
+	if err := uc.validator.Struct(&payload); err != nil {
 		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
@@ -51,6 +62,14 @@ func (uc *UserController) Login(c echo.Context) error {
 	var payload dtos.LoginRequest
 
 	if err := c.Bind(&payload); err != nil {
+		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
+			Code:   http.StatusBadRequest,
+			Status: http.StatusText(http.StatusBadRequest),
+			Error:  "Invalid request body: " + err.Error(),
+		})
+	}
+
+	if err := uc.validator.Struct(&payload); err != nil {
 		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),

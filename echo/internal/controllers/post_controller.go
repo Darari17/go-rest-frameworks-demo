@@ -7,16 +7,19 @@ import (
 	"github.com/Darari17/go-rest-frameworks-demo/echo/internal/dtos"
 	"github.com/Darari17/go-rest-frameworks-demo/echo/internal/helpers"
 	"github.com/Darari17/go-rest-frameworks-demo/echo/internal/services"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
 type PostController struct {
 	postService services.PostService
+	validator   *validator.Validate
 }
 
 func NewPostController(ps services.PostService) *PostController {
 	return &PostController{
 		postService: ps,
+		validator:   validator.New(),
 	}
 }
 
@@ -33,6 +36,14 @@ func (pc *PostController) CreatePost(c echo.Context) error {
 
 	var payload dtos.CreatePost
 	if err := c.Bind(&payload); err != nil {
+		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
+			Code:   http.StatusBadRequest,
+			Status: http.StatusText(http.StatusBadRequest),
+			Error:  "Invalid request body: " + err.Error(),
+		})
+	}
+
+	if err := pc.validator.Struct(&payload); err != nil {
 		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
@@ -128,6 +139,14 @@ func (pc *PostController) UpdatePost(c echo.Context) error {
 
 	var payload dtos.UpdatePost
 	if err := c.Bind(&payload); err != nil {
+		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
+			Code:   http.StatusBadRequest,
+			Status: http.StatusText(http.StatusBadRequest),
+			Error:  "Invalid request body: " + err.Error(),
+		})
+	}
+
+	if err := pc.validator.Struct(&payload); err != nil {
 		return c.JSON(http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
