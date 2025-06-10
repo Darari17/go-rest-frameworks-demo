@@ -9,4 +9,5 @@ type Post struct {
 	ImageURL  *string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	User      *User
 }
