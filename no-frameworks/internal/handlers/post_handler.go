@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/Darari17/go-rest-frameworks-demo/no-frameworks/internal/dtos"
 	"github.com/Darari17/go-rest-frameworks-demo/no-frameworks/internal/helper"
@@ -25,9 +24,18 @@ func NewPostHandler(postUsecase usecases.PostUsecase) *PostHandler {
 
 func (ph *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 
+	if r.Method != http.MethodPost {
+		helper.JSON(w, http.StatusMethodNotAllowed, dtos.Response[any]{
+			Code:   http.StatusMethodNotAllowed,
+			Status: http.StatusText(http.StatusMethodNotAllowed),
+			Error:  "Method not allowed",
+		})
+		return
+	}
+
 	ctx := r.Context()
 
-	userId, err := helper.GetUserFormContext(ctx)
+	userId, err := helper.GetUserFromContext(ctx)
 	if err != nil {
 		helper.JSON(w, http.StatusUnauthorized, dtos.Response[string]{
 			Code:   http.StatusUnauthorized,
@@ -76,9 +84,18 @@ func (ph *PostHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 func (ph *PostHandler) DeletePost(w http.ResponseWriter, r *http.Request) {
 
+	if r.Method != http.MethodDelete {
+		helper.JSON(w, http.StatusMethodNotAllowed, dtos.Response[any]{
+			Code:   http.StatusMethodNotAllowed,
+			Status: http.StatusText(http.StatusMethodNotAllowed),
+			Error:  "Method not allowed",
+		})
+		return
+	}
+
 	ctx := r.Context()
 
-	userId, err := helper.GetUserFormContext(ctx)
+	userId, err := helper.GetUserFromContext(ctx)
 	if err != nil {
 		helper.JSON(w, http.StatusUnauthorized, dtos.Response[string]{
 			Code:   http.StatusUnauthorized,
@@ -88,12 +105,12 @@ func (ph *PostHandler) DeletePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	postId, err := strconv.Atoi(r.URL.Query().Get("id"))
+	postId, err := helper.ExtractPathID(r)
 	if err != nil || postId <= 0 {
 		helper.JSON(w, http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
-			Error:  "Invalid post ID: " + err.Error(),
+			Error:  err.Error(),
 		})
 		return
 	}
@@ -130,9 +147,19 @@ func (ph *PostHandler) DeletePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ph *PostHandler) UpdatePost(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method != http.MethodPut {
+		helper.JSON(w, http.StatusMethodNotAllowed, dtos.Response[any]{
+			Code:   http.StatusMethodNotAllowed,
+			Status: http.StatusText(http.StatusMethodNotAllowed),
+			Error:  "Method not allowed",
+		})
+		return
+	}
+
 	ctx := r.Context()
 
-	userId, err := helper.GetUserFormContext(ctx)
+	userId, err := helper.GetUserFromContext(ctx)
 	if err != nil {
 		helper.JSON(w, http.StatusUnauthorized, dtos.Response[string]{
 			Code:   http.StatusUnauthorized,
@@ -142,12 +169,12 @@ func (ph *PostHandler) UpdatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	postId, err := strconv.Atoi(r.URL.Query().Get("id"))
+	postId, err := helper.ExtractPathID(r)
 	if err != nil || postId <= 0 {
 		helper.JSON(w, http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
-			Error:  "Invalid post ID: " + err.Error(),
+			Error:  err.Error(),
 		})
 		return
 	}
@@ -192,12 +219,22 @@ func (ph *PostHandler) UpdatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ph *PostHandler) FindPostByPostId(w http.ResponseWriter, r *http.Request) {
-	postId, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	if r.Method != http.MethodGet {
+		helper.JSON(w, http.StatusMethodNotAllowed, dtos.Response[any]{
+			Code:   http.StatusMethodNotAllowed,
+			Status: http.StatusText(http.StatusMethodNotAllowed),
+			Error:  "Method not allowed",
+		})
+		return
+	}
+
+	postId, err := helper.ExtractPathID(r)
 	if err != nil || postId <= 0 {
 		helper.JSON(w, http.StatusBadRequest, dtos.Response[string]{
 			Code:   http.StatusBadRequest,
 			Status: http.StatusText(http.StatusBadRequest),
-			Error:  "Invalid post ID: " + err.Error(),
+			Error:  err.Error(),
 		})
 		return
 	}
@@ -220,9 +257,19 @@ func (ph *PostHandler) FindPostByPostId(w http.ResponseWriter, r *http.Request) 
 }
 
 func (ph *PostHandler) FindPostsByUserId(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method != http.MethodGet {
+		helper.JSON(w, http.StatusMethodNotAllowed, dtos.Response[any]{
+			Code:   http.StatusMethodNotAllowed,
+			Status: http.StatusText(http.StatusMethodNotAllowed),
+			Error:  "Method not allowed",
+		})
+		return
+	}
+
 	ctx := r.Context()
 
-	userId, err := helper.GetUserFormContext(ctx)
+	userId, err := helper.GetUserFromContext(ctx)
 	if err != nil {
 		helper.JSON(w, http.StatusUnauthorized, dtos.Response[string]{
 			Code:   http.StatusUnauthorized,

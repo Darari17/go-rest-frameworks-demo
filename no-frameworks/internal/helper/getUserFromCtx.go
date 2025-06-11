@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-func GetUserFormContext(ctx context.Context) (uint, error) {
+func GetUserFromContext(ctx context.Context) (uint, error) {
 	userId := ctx.Value("user_id")
 	uid, ok := userId.(uint)
 	if !ok {

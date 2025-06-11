@@ -7,6 +7,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var Cfg *Config = LoadConfig()
+
 func LoadConfig() *Config {
 
 	err := godotenv.Load()

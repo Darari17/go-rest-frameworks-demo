@@ -24,6 +24,15 @@ func NewUserHandler(uc usecases.UserUsecase) *UserHandler {
 
 func (uh *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 
+	if r.Method != http.MethodPost {
+		helper.JSON(w, http.StatusMethodNotAllowed, dtos.Response[any]{
+			Code:   http.StatusMethodNotAllowed,
+			Status: http.StatusText(http.StatusMethodNotAllowed),
+			Error:  "Method is allowed",
+		})
+		return
+	}
+
 	var payload dtos.RegisterRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
@@ -62,8 +71,16 @@ func (uh *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (uh *UserHandler) Logi(w http.ResponseWriter, r *http.Request) {
+func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 
+	if r.Method != http.MethodPost {
+		helper.JSON(w, http.StatusMethodNotAllowed, dtos.Response[any]{
+			Code:   http.StatusMethodNotAllowed,
+			Status: http.StatusText(http.StatusMethodNotAllowed),
+			Error:  "Method is allowed",
+		})
+		return
+	}
 	var payload dtos.LoginRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {

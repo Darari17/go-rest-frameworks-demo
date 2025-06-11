@@ -10,12 +10,12 @@ import (
 	"github.com/Darari17/go-rest-frameworks-demo/no-frameworks/internal/util"
 )
 
-type AuhtMiddleware struct {
+type AuthMiddleware struct {
 	jwt util.JwtHandler
 }
 
-func NewAuthMiddleware(jwt util.JwtHandler) *AuhtMiddleware {
-	return &AuhtMiddleware{
+func NewAuthMiddleware(jwt util.JwtHandler) *AuthMiddleware {
+	return &AuthMiddleware{
 		jwt: jwt,
 	}
 }
@@ -24,7 +24,7 @@ type contextKey string
 
 const userIDKey contextKey = "user_id"
 
-func (a *AuhtMiddleware) RequiredToken(next http.Handler) http.Handler {
+func (a *AuthMiddleware) RequiredToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
