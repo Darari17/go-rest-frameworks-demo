@@ -4,21 +4,18 @@ import (
 	"errors"
 
 	"github.com/Darari17/go-rest-frameworks-demo/echo/internal/dtos"
-	"github.com/Darari17/go-rest-frameworks-demo/echo/internal/jwt"
 	"github.com/Darari17/go-rest-frameworks-demo/echo/internal/models"
 	"github.com/Darari17/go-rest-frameworks-demo/echo/internal/repositories"
 	"github.com/go-playground/validator/v10"
 )
 
 type PostService struct {
-	postRepo   repositories.PostRepository
-	jwtHandler jwt.JWTHandler
+	postRepo repositories.PostRepository
 }
 
-func NewPostService(postRepo repositories.PostRepository, jwtHandler jwt.JWTHandler) *PostService {
+func NewPostService(postRepo repositories.PostRepository) *PostService {
 	return &PostService{
-		postRepo:   postRepo,
-		jwtHandler: jwtHandler,
+		postRepo: postRepo,
 	}
 }
 

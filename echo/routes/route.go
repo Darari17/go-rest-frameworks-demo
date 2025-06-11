@@ -89,7 +89,7 @@ func NewServer() *Routes {
 	postRepo := repositories.NewPostRepository(db)
 
 	userService := services.NewUserService(*userRepo, *jwtHandler)
-	postService := services.NewPostService(*postRepo, *jwtHandler)
+	postService := services.NewPostService(*postRepo)
 
 	userController := controllers.NewUserController(*userService)
 	postController := controllers.NewPostController(*postService)
